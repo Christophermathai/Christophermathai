@@ -73,18 +73,18 @@ def main() -> int:
 
     tree = ET.parse(ASSET)
     root = tree.getroot()
-    ns = "{http://www.w3.org/2000/svg}"
     for key, value in stats.items():
         element = root.find(f".//*[@id='{key}']")
         if element is None:
             raise RuntimeError(f"Missing SVG element id={key}")
         element.text = format_number(value)
 
-    updated = root.find(f".//*[@id='updated']")
+    updated = root.find(".//*[@id='updated']")
     if updated is not None:
         updated.text = "Updated " + datetime.now(timezone.utc).strftime("%d %b %Y")
 
     ET.register_namespace("", "http://www.w3.org/2000/svg")
+    ET.register_namespace("xlink", "http://www.w3.org/1999/xlink")
     tree.write(ASSET, encoding="utf-8", xml_declaration=True)
     print("Updated profile statistics:", stats)
     return 0
